@@ -25,6 +25,6 @@ jobs:
         script: |
           cd node-app-library/
           git pull origin main
-          npm i
-          npm run compile
-          pm2 restart 0
+          sudo npm i
+          sudo npm run compile
+          sudo pm2 restart 0
