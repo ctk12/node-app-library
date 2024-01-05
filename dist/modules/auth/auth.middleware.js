@@ -13,6 +13,7 @@ const verifyCallback = (req, resolve, reject) => async (err, user, info) => {
     if (err || info || !user) {
         return reject(new ApiError_1.default(http_status_1.default.UNAUTHORIZED, ApiMessage_1.default.Error.UNAUTHORIZED));
     }
+    req.user = user;
     const requiredRight = {
         books: "books",
         users: "users",
@@ -35,9 +36,6 @@ const verifyCallback = (req, resolve, reject) => async (err, user, info) => {
             if (requiredRightRole !== "isRead") {
                 return reject(new ApiError_1.default(http_status_1.default.FORBIDDEN, ApiMessage_1.default.Error.FORBIDDEN));
             }
-        }
-        if (requiredRight === "transactions") {
-            return reject(new ApiError_1.default(http_status_1.default.FORBIDDEN, ApiMessage_1.default.Error.FORBIDDEN));
         }
     }
     resolve();

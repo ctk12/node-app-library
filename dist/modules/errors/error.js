@@ -20,13 +20,9 @@ const errorConverter = (err, _req, _res, next) => {
 exports.errorConverter = errorConverter;
 // eslint-disable-next-line no-unused-vars
 const errorHandler = (err, _req, res, _next) => {
-    let { statusCode, message } = err;
-    if (config_1.default.env === "production" && !err.isOperational) {
-        statusCode = http_status_1.default.INTERNAL_SERVER_ERROR;
-        message = "Internal Server Error";
-    }
+    const { statusCode, message } = err;
     res.locals["errorMessage"] = err.message;
-    const response = Object.assign({ code: statusCode, message }, (config_1.default.env === "development" && { stack: err.stack }));
+    const response = Object.assign({ success: false, message: message.replace(/[^a-zA-Z0-9/_/ ]/g, "") }, (config_1.default.env === "development" && { stack: err.stack }));
     if (config_1.default.env === "development") {
         console.error(err);
     }

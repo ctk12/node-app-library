@@ -31,7 +31,7 @@ exports.getUsers = {
 };
 exports.getUser = {
     params: joi_1.default.object().keys({
-        userId: joi_1.default.string().custom(custom_validation_1.objectId),
+        userId: joi_1.default.required().custom(custom_validation_1.objectId),
     }),
 };
 exports.updateUser = {
@@ -48,6 +48,6 @@ exports.updateUser = {
 };
 exports.deleteUser = {
     params: joi_1.default.object().keys({
-        userId: joi_1.default.string().custom(custom_validation_1.objectId),
+        userId: joi_1.default.required().custom(custom_validation_1.objectId),
     }),
 };

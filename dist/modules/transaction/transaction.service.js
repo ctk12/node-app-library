@@ -8,21 +8,36 @@ const transaction_model_1 = __importDefault(require("./transaction.model"));
 const ApiMessage_1 = __importDefault(require("../ApiMessage/ApiMessage"));
 const errors_1 = require("../errors");
 const http_status_1 = __importDefault(require("http-status"));
+const user_interfaces_1 = require("../user/user.interfaces");
 /**
  * Create a Transaction
  * @param {NewCreatedTransactions} transactionBody
  * @returns {Promise<ITransactionsDoc>}
  */
 const createTransaction = async (transactionBody) => {
+    const { user_name, book_name, due_date, transaction_type } = transactionBody;
+    if (await transaction_model_1.default.findOne({ user_name, book_name, due_date, transaction_type })) {
+        throw new errors_1.ApiError(http_status_1.default.BAD_REQUEST, ApiMessage_1.default.Error.TRANSACTION_EXITS);
+    }
     return transaction_model_1.default.create(transactionBody);
 };
 exports.createTransaction = createTransaction;
 /**
  * Get Transactions
+ * @param {Object} filter - Mongo filter
+ * @param {Object} options - Query options
+ * @param {IUser} user - check is admin
  * @returns {Promise<QueryResult>}
  */
-const queryTransactions = async (filter, options) => {
-    const transactions = await transaction_model_1.default.paginate(filter, options);
+const queryTransactions = async (filter, options, user) => {
+    let transactions;
+    if (user.role === user_interfaces_1.roleType.ADMIN) {
+        transactions = await transaction_model_1.default.paginate(filter, options);
+    }
+    else {
+        filter.user_name = user.user_name;
+        transactions = await transaction_model_1.default.paginate(filter, options);
+    }
     return transactions;
 };
 exports.queryTransactions = queryTransactions;
@@ -43,14 +58,6 @@ const updateTransactionById = async (transactionId, updateBody) => {
     const transaction = await (0, exports.getTransactionById)(transactionId);
     if (!transaction) {
         throw new errors_1.ApiError(http_status_1.default.BAD_REQUEST, ApiMessage_1.default.Error.NOT_FOUND);
-    }
-    if (updateBody.user_details) {
-        const user_details = updateBody.user_details;
-        updateBody.user_name = user_details.user_name;
-    }
-    if (updateBody.book_details) {
-        const book_details = updateBody.book_details;
-        updateBody.book_name = book_details.name;
     }
     Object.assign(transaction, updateBody);
     await transaction.save();

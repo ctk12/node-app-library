@@ -3,11 +3,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteBookById = exports.updateBookById = exports.getBookById = exports.queryBooks = exports.createBook = void 0;
+exports.deleteBookById = exports.updateBookById = exports.getBookById = exports.queryAllBooks = exports.queryMyBooks = exports.queryBooks = exports.createBook = void 0;
 const books_model_1 = __importDefault(require("./books.model"));
 const ApiMessage_1 = __importDefault(require("../ApiMessage/ApiMessage"));
 const errors_1 = require("../errors");
 const http_status_1 = __importDefault(require("http-status"));
+const transaction_service_1 = require("../transaction/transaction.service");
 /**
  * Create a book
  * @param {NewCreatedBooks} bookBody
@@ -29,6 +30,28 @@ const queryBooks = async (filter, options) => {
     return books;
 };
 exports.queryBooks = queryBooks;
+/**
+ * Get Books
+ * @param {IUser} user
+ * @returns {Promise<Books[]>}
+ */
+const queryMyBooks = async (user) => {
+    const allMyTransactions = await (0, transaction_service_1.queryTransactions)({}, {}, user);
+    const myTransactions = allMyTransactions.results.map((data) => data.book_name);
+    const books = await books_model_1.default.find();
+    const bookData = books.filter((data) => myTransactions.includes(data.name));
+    return bookData;
+};
+exports.queryMyBooks = queryMyBooks;
+/**
+ * Get all Books
+ * @returns {Promise<IBooks[]>}
+ */
+const queryAllBooks = async () => {
+    const books = await books_model_1.default.find();
+    return books;
+};
+exports.queryAllBooks = queryAllBooks;
 /**
  * Get Book by id
  * @param {mongoose.Types.ObjectId} BookId

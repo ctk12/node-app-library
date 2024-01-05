@@ -17,14 +17,6 @@ const transactionsSchema = new mongoose_1.default.Schema({
         type: String,
         required: true,
     },
-    user_details: {
-        type: Object,
-        required: true,
-    },
-    book_details: {
-        type: Object,
-        required: true,
-    },
     due_date: {
         type: String,
         required: true,

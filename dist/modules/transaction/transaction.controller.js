@@ -26,7 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteTransaction = exports.updateTransaction = exports.getTransaction = exports.getTransactions = exports.alterCreateTransaction = exports.createTransaction = void 0;
+exports.deleteTransaction = exports.updateTransaction = exports.getTransaction = exports.getTransactions = exports.createTransaction = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 const TransactionsService = __importStar(require("./transaction.service"));
@@ -36,86 +36,51 @@ const http_status_1 = __importDefault(require("http-status"));
 const errors_1 = require("../errors");
 const pick_1 = __importDefault(require("../utils/pick"));
 exports.createTransaction = (0, catchAsync_1.default)(async (req, res) => {
-    try {
-        const transaction = await TransactionsService.createTransaction(req.body);
-        res.status(http_status_1.default.CREATED).send((0, ApiResponse_1.default)(true, ApiMessage_1.default.Data.CREATED_SUCCESSFULLY, transaction));
-    }
-    catch (error) {
-        res.status(http_status_1.default.BAD_REQUEST).send((0, ApiResponse_1.default)(false, error.message));
-    }
-});
-exports.alterCreateTransaction = (0, catchAsync_1.default)(async (req, res, next) => {
-    var _a, _b;
-    if ((_a = req.body) === null || _a === void 0 ? void 0 : _a.user_details) {
-        req.body.user_name = req.body.user_details.user_name;
-    }
-    if ((_b = req.body) === null || _b === void 0 ? void 0 : _b.book_details) {
-        req.body.book_name = req.body.book_details.name;
-    }
-    next();
+    const transaction = await TransactionsService.createTransaction(req.body);
+    res.status(http_status_1.default.CREATED).send((0, ApiResponse_1.default)(true, ApiMessage_1.default.Data.CREATED_SUCCESSFULLY, transaction));
 });
 exports.getTransactions = (0, catchAsync_1.default)(async (req, res) => {
-    try {
-        const filter = (0, pick_1.default)(req.query, ["user_name", "book_name", "due_date", "transaction_type"]);
-        const options = (0, pick_1.default)(req.query, ["sortBy", "limit", "page", "projectBy"]);
-        const result = await TransactionsService.queryTransactions(filter, options);
-        res.status(http_status_1.default.OK).send((0, ApiResponse_1.default)(true, ApiMessage_1.default.Data.SUCCESS, result));
-    }
-    catch (error) {
-        res.status(http_status_1.default.BAD_REQUEST).send((0, ApiResponse_1.default)(false, error.message));
-    }
+    const filter = (0, pick_1.default)(req.query, ["user_name", "book_name", "due_date", "transaction_type"]);
+    const options = (0, pick_1.default)(req.query, ["sortBy", "limit", "page", "projectBy"]);
+    const result = await TransactionsService.queryTransactions(filter, options, req.user);
+    res.status(http_status_1.default.OK).send((0, ApiResponse_1.default)(true, ApiMessage_1.default.Data.SUCCESS, result));
 });
 exports.getTransaction = (0, catchAsync_1.default)(async (req, res) => {
-    try {
-        const { transactionId } = req.params;
-        const transactionIdObj = new mongoose_1.default.Types.ObjectId(transactionId);
-        if (transactionIdObj) {
-            const transaction = await TransactionsService.getTransactionById(transactionIdObj);
-            if (!transaction) {
-                throw new errors_1.ApiError(http_status_1.default.BAD_REQUEST, ApiMessage_1.default.Error.NOT_FOUND);
-            }
-            res.status(http_status_1.default.OK).send((0, ApiResponse_1.default)(true, ApiMessage_1.default.Data.SUCCESS, transaction));
+    const { transactionId } = req.params;
+    const transactionIdObj = new mongoose_1.default.Types.ObjectId(transactionId);
+    if (transactionIdObj) {
+        const transaction = await TransactionsService.getTransactionById(transactionIdObj);
+        if (!transaction) {
+            throw new errors_1.ApiError(http_status_1.default.BAD_REQUEST, ApiMessage_1.default.Error.NOT_FOUND);
         }
-        else {
-            throw new errors_1.ApiError(http_status_1.default.BAD_REQUEST, ApiMessage_1.default.Error.MISSING_PARAMETER);
-        }
+        res.status(http_status_1.default.OK).send((0, ApiResponse_1.default)(true, ApiMessage_1.default.Data.SUCCESS, transaction));
     }
-    catch (error) {
-        res.status(http_status_1.default.BAD_REQUEST).send((0, ApiResponse_1.default)(false, error.message));
+    else {
+        throw new errors_1.ApiError(http_status_1.default.BAD_REQUEST, ApiMessage_1.default.Error.MISSING_PARAMETER);
     }
 });
 exports.updateTransaction = (0, catchAsync_1.default)(async (req, res) => {
-    try {
-        const { transactionId } = req.params;
-        const transactionIdObj = new mongoose_1.default.Types.ObjectId(transactionId);
-        if (transactionIdObj) {
-            const transaction = await TransactionsService.updateTransactionById(transactionIdObj, req.body);
-            if (!transaction) {
-                throw new errors_1.ApiError(http_status_1.default.BAD_REQUEST, ApiMessage_1.default.Error.NOT_FOUND);
-            }
-            res.status(http_status_1.default.OK).send((0, ApiResponse_1.default)(true, ApiMessage_1.default.Data.UPDATED_SUCCESSFULLY, transaction));
+    const { transactionId } = req.params;
+    const transactionIdObj = new mongoose_1.default.Types.ObjectId(transactionId);
+    if (transactionIdObj) {
+        const transaction = await TransactionsService.updateTransactionById(transactionIdObj, req.body);
+        if (!transaction) {
+            throw new errors_1.ApiError(http_status_1.default.BAD_REQUEST, ApiMessage_1.default.Error.NOT_FOUND);
         }
-        else {
-            throw new errors_1.ApiError(http_status_1.default.BAD_REQUEST, ApiMessage_1.default.Error.MISSING_PARAMETER);
-        }
+        res.status(http_status_1.default.OK).send((0, ApiResponse_1.default)(true, ApiMessage_1.default.Data.UPDATED_SUCCESSFULLY, transaction));
     }
-    catch (error) {
-        res.status(http_status_1.default.BAD_REQUEST).send((0, ApiResponse_1.default)(false, error.message));
+    else {
+        throw new errors_1.ApiError(http_status_1.default.BAD_REQUEST, ApiMessage_1.default.Error.MISSING_PARAMETER);
     }
 });
 exports.deleteTransaction = (0, catchAsync_1.default)(async (req, res) => {
-    try {
-        const { transactionId } = req.params;
-        const transactionIdObj = new mongoose_1.default.Types.ObjectId(transactionId);
-        if (transactionIdObj) {
-            await TransactionsService.deleteTransactionById(transactionIdObj);
-            res.status(http_status_1.default.OK).send((0, ApiResponse_1.default)(true, ApiMessage_1.default.Data.DELETED_SUCCESSFULLY));
-        }
-        else {
-            throw new errors_1.ApiError(http_status_1.default.BAD_REQUEST, ApiMessage_1.default.Error.MISSING_PARAMETER);
-        }
+    const { transactionId } = req.params;
+    const transactionIdObj = new mongoose_1.default.Types.ObjectId(transactionId);
+    if (transactionIdObj) {
+        await TransactionsService.deleteTransactionById(transactionIdObj);
+        res.status(http_status_1.default.OK).send((0, ApiResponse_1.default)(true, ApiMessage_1.default.Data.DELETED_SUCCESSFULLY));
     }
-    catch (error) {
-        res.status(http_status_1.default.BAD_REQUEST).send((0, ApiResponse_1.default)(false, error.message));
+    else {
+        throw new errors_1.ApiError(http_status_1.default.BAD_REQUEST, ApiMessage_1.default.Error.MISSING_PARAMETER);
     }
 });

@@ -9,8 +9,6 @@ const custom_validation_1 = require("../validate/custom.validation");
 const createTransactionsBody = {
     user_name: joi_1.default.string().required(),
     book_name: joi_1.default.string().required(),
-    user_details: joi_1.default.object().required(),
-    book_details: joi_1.default.object().required(),
     due_date: joi_1.default.string().required(),
     transaction_type: joi_1.default.string().required(),
 };
@@ -31,7 +29,7 @@ exports.getTransactions = {
 };
 exports.getTransaction = {
     params: joi_1.default.object().keys({
-        transactionId: joi_1.default.string().custom(custom_validation_1.objectId),
+        transactionId: joi_1.default.required().custom(custom_validation_1.objectId),
     }),
 };
 exports.updateTransaction = {
@@ -40,8 +38,8 @@ exports.updateTransaction = {
     }),
     body: joi_1.default.object()
         .keys({
-        user_details: joi_1.default.object(),
-        book_details: joi_1.default.object(),
+        user_name: joi_1.default.string(),
+        book_name: joi_1.default.string(),
         due_date: joi_1.default.string(),
         transaction_type: joi_1.default.string(),
     })
@@ -49,6 +47,6 @@ exports.updateTransaction = {
 };
 exports.deleteTransaction = {
     params: joi_1.default.object().keys({
-        transactionId: joi_1.default.string().custom(custom_validation_1.objectId),
+        transactionId: joi_1.default.required().custom(custom_validation_1.objectId),
     }),
 };

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUserById = exports.updateUserById = exports.getUserByEmail = exports.getUserById = exports.queryUsers = exports.registerUser = exports.createUser = void 0;
+exports.deleteUserById = exports.updateUserById = exports.getUserByEmail = exports.getUserById = exports.queryAllUsers = exports.queryUsers = exports.registerUser = exports.createUser = void 0;
 const http_status_1 = __importDefault(require("http-status"));
 const user_model_1 = __importDefault(require("./user.model"));
 const ApiError_1 = __importDefault(require("../errors/ApiError"));
@@ -49,6 +49,15 @@ const queryUsers = async (filter, options) => {
     return users;
 };
 exports.queryUsers = queryUsers;
+/**
+ * Query for all users
+ * @returns {Promise<IUser[]>}
+ */
+const queryAllUsers = async () => {
+    const users = await user_model_1.default.find();
+    return users;
+};
+exports.queryAllUsers = queryAllUsers;
 /**
  * Get user by id
  * @param {mongoose.Types.ObjectId} id

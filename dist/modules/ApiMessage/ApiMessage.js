@@ -25,6 +25,7 @@ var Error;
     Error["PASSWORD_RESET_FAILED"] = "Password reset failed";
     Error["NOT_ALLOWED"] = "Not allowed";
     Error["PASSWORD_REQUIRMENTS"] = "Password must contain at least one letter and one number";
+    Error["TRANSACTION_EXITS"] = "Already transaction exits with same details";
 })(Error || (Error = {}));
 var Data;
 (function (Data) {

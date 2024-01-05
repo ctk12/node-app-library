@@ -26,7 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUser = exports.updateUser = exports.getUser = exports.getUsers = exports.createUser = void 0;
+exports.getAllUsers = exports.deleteUser = exports.updateUser = exports.getUser = exports.getUsers = exports.createUser = void 0;
 const http_status_1 = __importDefault(require("http-status"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const catchAsync_1 = __importDefault(require("../utils/catchAsync"));
@@ -36,79 +36,58 @@ const userService = __importStar(require("./user.service"));
 const ApiMessage_1 = __importDefault(require("../ApiMessage/ApiMessage"));
 const ApiResponse_1 = __importDefault(require("../ApiMessage/ApiResponse"));
 exports.createUser = (0, catchAsync_1.default)(async (req, res) => {
-    try {
-        const user = await userService.createUser(req.body);
-        res.status(http_status_1.default.CREATED).send((0, ApiResponse_1.default)(true, ApiMessage_1.default.Data.CREATED_SUCCESSFULLY, user));
-    }
-    catch (error) {
-        res.status(http_status_1.default.BAD_REQUEST).send((0, ApiResponse_1.default)(false, error.message));
-    }
+    const user = await userService.createUser(req.body);
+    res.status(http_status_1.default.CREATED).send((0, ApiResponse_1.default)(true, ApiMessage_1.default.Data.CREATED_SUCCESSFULLY, user));
 });
 exports.getUsers = (0, catchAsync_1.default)(async (req, res) => {
-    try {
-        const filter = (0, pick_1.default)(req.query, ["user_name", "name", "email", "role"]);
-        const options = (0, pick_1.default)(req.query, ["sortBy", "limit", "page", "projectBy"]);
-        const result = await userService.queryUsers(filter, options);
-        res.send((0, ApiResponse_1.default)(true, ApiMessage_1.default.Data.SUCCESS, result));
-    }
-    catch (error) {
-        res.status(http_status_1.default.BAD_REQUEST).send((0, ApiResponse_1.default)(false, error.message));
-    }
+    const filter = (0, pick_1.default)(req.query, ["user_name", "name", "email", "role"]);
+    const options = (0, pick_1.default)(req.query, ["sortBy", "limit", "page", "projectBy"]);
+    const result = await userService.queryUsers(filter, options);
+    res.send((0, ApiResponse_1.default)(true, ApiMessage_1.default.Data.SUCCESS, result));
 });
 exports.getUser = (0, catchAsync_1.default)(async (req, res) => {
-    try {
-        const { userId } = req.params;
-        const userIdObj = new mongoose_1.default.Types.ObjectId(userId);
-        if (userIdObj) {
-            const user = await userService.getUserById(userIdObj);
-            if (!user) {
-                throw new ApiError_1.default(http_status_1.default.NOT_FOUND, ApiMessage_1.default.Error.NOT_FOUND);
-            }
-            res.send((0, ApiResponse_1.default)(true, ApiMessage_1.default.Data.SUCCESS, user));
+    const { userId } = req.params;
+    const userIdObj = new mongoose_1.default.Types.ObjectId(userId);
+    if (userIdObj) {
+        const user = await userService.getUserById(userIdObj);
+        if (!user) {
+            throw new ApiError_1.default(http_status_1.default.NOT_FOUND, ApiMessage_1.default.Error.NOT_FOUND);
         }
-        else {
-            throw new ApiError_1.default(http_status_1.default.NOT_FOUND, ApiMessage_1.default.Error.MISSING_PARAMETER);
-        }
+        res.send((0, ApiResponse_1.default)(true, ApiMessage_1.default.Data.SUCCESS, user));
     }
-    catch (error) {
-        res.status(http_status_1.default.BAD_REQUEST).send((0, ApiResponse_1.default)(false, error.message));
+    else {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, ApiMessage_1.default.Error.MISSING_PARAMETER);
     }
 });
 exports.updateUser = (0, catchAsync_1.default)(async (req, res) => {
-    try {
-        const { userId } = req.params;
-        const userIdObj = new mongoose_1.default.Types.ObjectId(userId);
-        if (userIdObj) {
-            const user = await userService.updateUserById(userIdObj, req.body);
-            if (!user) {
-                throw new ApiError_1.default(http_status_1.default.NOT_FOUND, ApiMessage_1.default.Error.NOT_FOUND);
-            }
-            res.send((0, ApiResponse_1.default)(true, ApiMessage_1.default.Data.UPDATED_SUCCESSFULLY, user));
+    const { userId } = req.params;
+    const userIdObj = new mongoose_1.default.Types.ObjectId(userId);
+    if (userIdObj) {
+        const user = await userService.updateUserById(userIdObj, req.body);
+        if (!user) {
+            throw new ApiError_1.default(http_status_1.default.NOT_FOUND, ApiMessage_1.default.Error.NOT_FOUND);
         }
-        else {
-            throw new ApiError_1.default(http_status_1.default.NOT_FOUND, ApiMessage_1.default.Error.MISSING_PARAMETER);
-        }
+        res.send((0, ApiResponse_1.default)(true, ApiMessage_1.default.Data.UPDATED_SUCCESSFULLY, user));
     }
-    catch (error) {
-        res.status(http_status_1.default.BAD_REQUEST).send((0, ApiResponse_1.default)(false, error.message));
+    else {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, ApiMessage_1.default.Error.MISSING_PARAMETER);
     }
 });
 exports.deleteUser = (0, catchAsync_1.default)(async (req, res) => {
-    try {
-        const { userId } = req.params;
-        const userIdObj = new mongoose_1.default.Types.ObjectId(userId);
-        if (userId === req.user.id) {
-            throw new ApiError_1.default(http_status_1.default.NOT_FOUND, ApiMessage_1.default.Error.NOT_ALLOWED);
-        }
-        if (userIdObj) {
-            await userService.deleteUserById(userIdObj);
-            res.status(http_status_1.default.NO_CONTENT).send((0, ApiResponse_1.default)(true, ApiMessage_1.default.Data.DELETED_SUCCESSFULLY));
-        }
-        else {
-            throw new ApiError_1.default(http_status_1.default.NOT_FOUND, ApiMessage_1.default.Error.MISSING_PARAMETER);
-        }
+    const { userId } = req.params;
+    const userIdObj = new mongoose_1.default.Types.ObjectId(userId);
+    if (userId === req.user.id) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, ApiMessage_1.default.Error.NOT_ALLOWED);
     }
-    catch (error) {
-        res.status(http_status_1.default.BAD_REQUEST).send((0, ApiResponse_1.default)(false, error.message));
+    if (userIdObj) {
+        await userService.deleteUserById(userIdObj);
+        res.status(http_status_1.default.NO_CONTENT).send((0, ApiResponse_1.default)(true, ApiMessage_1.default.Data.DELETED_SUCCESSFULLY));
     }
+    else {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, ApiMessage_1.default.Error.MISSING_PARAMETER);
+    }
+});
+exports.getAllUsers = (0, catchAsync_1.default)(async (req, res) => {
+    const result = await userService.queryAllUsers();
+    res.send((0, ApiResponse_1.default)(true, ApiMessage_1.default.Data.SUCCESS, result));
 });
