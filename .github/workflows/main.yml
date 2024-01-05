@@ -24,7 +24,6 @@ jobs:
         port: 22
         script: |
           cd node-app-library/
-          git pull origin main --rebase --autostash
+          git pull origin main --rebase
           npm i --legacy-peer-deps
-          npm run compile
           pm2 restart 0
