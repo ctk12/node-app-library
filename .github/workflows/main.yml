@@ -24,6 +24,9 @@ jobs:
         port: 22
         script: |
           cd node-app-library/
-          git pull origin main --rebase
+          git fetch origin
+          git reset --hard origin/main
+          rm -r node_modules/
+          rm package-lock.json
           npm i --legacy-peer-deps
           pm2 restart 0
