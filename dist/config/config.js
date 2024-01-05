@@ -23,7 +23,7 @@ const envVarsSchema = joi_1.default.object()
     .unknown();
 const { value: envVars, error } = envVarsSchema.prefs({ errors: { label: "key" } }).validate(process.env);
 if (error) {
-    throw new Error(`Config validation error: ${error.message}`);
+    throw new Error(`Config env validation error: ${error.message}`);
 }
 const mongodbURL = (data) => {
     if (data === "production") {
