@@ -10,7 +10,7 @@ const createUserBody = {
     user_name: joi_1.default.string().required(),
     name: joi_1.default.string().required(),
     email: joi_1.default.string().required().email(),
-    password: joi_1.default.string().required().custom(custom_validation_1.password),
+    password: joi_1.default.string().optional(),
     role: joi_1.default.string().required(),
     contact_number: joi_1.default.string().required(),
 };

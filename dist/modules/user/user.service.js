@@ -8,6 +8,7 @@ const http_status_1 = __importDefault(require("http-status"));
 const user_model_1 = __importDefault(require("./user.model"));
 const ApiError_1 = __importDefault(require("../errors/ApiError"));
 const ApiMessage_1 = __importDefault(require("../ApiMessage/ApiMessage"));
+const crypto_1 = __importDefault(require("crypto"));
 /**
  * Create a user
  * @param {NewCreatedUser} userBody
@@ -20,6 +21,7 @@ const createUser = async (userBody) => {
     if (await user_model_1.default.isUserNameTaken(userBody.user_name)) {
         throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, ApiMessage_1.default.Error.USERNAME_TAKEN);
     }
+    userBody.password = crypto_1.default.randomBytes(20).toString("hex");
     return user_model_1.default.create(userBody);
 };
 exports.createUser = createUser;
