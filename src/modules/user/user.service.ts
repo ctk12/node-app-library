@@ -5,6 +5,8 @@ import ApiError from "../errors/ApiError";
 import { IOptions, QueryResult } from "../paginate/paginate";
 import { NewCreatedUser, UpdateUserBody, IUserDoc, NewRegisteredUser, IUser } from "./user.interfaces";
 import ApiMessage from "../ApiMessage/ApiMessage";
+import crypto from "crypto";
+
 /**
  * Create a user
  * @param {NewCreatedUser} userBody
@@ -17,6 +19,7 @@ export const createUser = async (userBody: NewCreatedUser): Promise<IUserDoc> =>
   if (await User.isUserNameTaken(userBody.user_name)) {
     throw new ApiError(httpStatus.BAD_REQUEST, ApiMessage.Error.USERNAME_TAKEN);
   }
+  userBody.password = crypto.randomBytes(20).toString("hex");
   return User.create(userBody);
 };
 

@@ -6,7 +6,7 @@ const createUserBody: Record<keyof NewCreatedUser, any> = {
   user_name: Joi.string().required(),
   name: Joi.string().required(),
   email: Joi.string().required().email(),
-  password: Joi.string().required().custom(password),
+  password: Joi.string().optional().custom(password),
   role: Joi.string().required(),
   contact_number: Joi.string().required(),
 };
