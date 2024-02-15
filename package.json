@@ -16,7 +16,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --check **/*.ts",
-    "prettier:fix": "prettier --write **/*.ts"
+    "prettier:fix": "prettier --write **/*.ts",
+    "vercel-build": "echo hello"
   },
   "keywords": [
     "node",
