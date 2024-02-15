@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node public/index.js",
+    "start": "node dist/index.js",
     "compile": "tsc --build",
     "predev": "eslint . --fix",
     "dev": "cross-env ts-node-dev --respawn --watch --transpile-only src/index.ts",
@@ -16,8 +16,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --check **/*.ts",
-    "prettier:fix": "prettier --write **/*.ts",
-    "vercel-build": "echo hello"
+    "prettier:fix": "prettier --write **/*.ts"
   },
   "keywords": [
     "node",
